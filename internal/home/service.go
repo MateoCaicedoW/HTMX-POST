@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/gobuffalo/validate"
+	"github.com/gobuffalo/validate/validators"
 	"github.com/wawandco/fako"
 )
 
@@ -28,7 +30,8 @@ func (s *service) All(term string, perPage, page int, orderBy, order, status str
 	for _, user := range users {
 		term = strings.ToLower(term)
 		name := strings.ToLower(user.Name)
-		if strings.Contains(name, term) {
+		email := strings.ToLower(user.Email)
+		if strings.Contains(name, term) || strings.Contains(email, term) {
 			items = append(items, user)
 		}
 	}
@@ -68,16 +71,20 @@ func (s *service) All(term string, perPage, page int, orderBy, order, status str
 		}
 	}
 
+	if orderBy == "email" {
+		if order == "desc" {
+			sort.Sort(sort.Reverse(models.OrderUserByEmail(items)))
+		}
+
+		if order == "asc" {
+			sort.Sort(models.OrderUserByEmail(items))
+		}
+	}
+
 	// Paginate users
 	total := len(users)
 	if term != "" || status != "all" {
 		total = len(items)
-	}
-
-	// If the page is greater than the total number of pages
-	// we need to reset the page to 1.
-	if page > len(items)/perPage {
-		page = 1
 	}
 
 	// Calculate the start and end indexes for the items.
@@ -99,9 +106,20 @@ func (s *service) All(term string, perPage, page int, orderBy, order, status str
 	}
 }
 
+// Validate validates the user.
+func (s *service) Validate(user models.User) *validate.Errors {
+	errs := validate.Validate(
+		&validators.EmailIsPresent{Field: user.Email, Name: "Email"},
+		&validators.StringIsPresent{Field: user.Name, Name: "Name"},
+		&validators.StringIsPresent{Field: user.Phone, Name: "Phone"},
+	)
+
+	return errs
+}
+
 func init() {
 	// Generate fake data
-	users = make([]models.User, 20)
+	users = make([]models.User, 10_000)
 	for i := range users {
 		fako.Fill(&users[i])
 

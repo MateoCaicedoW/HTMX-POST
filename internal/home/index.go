@@ -33,7 +33,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 		status = "all"
 	}
 
-	users := userService.All(term, 5, page, orderBy, order, status)
+	users := userService.All(term, 15, page, orderBy, order, status)
 
 	rw.Set("list", users)
 	rw.Set("term", term)

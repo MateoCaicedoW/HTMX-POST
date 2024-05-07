@@ -1,4 +1,9 @@
 <div class="w-full text-[#EEEEEE] flex flex-col gap-4">
+    <div class="flex justify-end">
+        <button hx-get="/new" hx-target="#modal" hx-trigger="click" hx-swap="outerHTML" type="button" class="bg-[#76ABAE] h-8 text-white px-4 py-2 rounded-md hover:bg-[#76ABAE]/50 focus:outline-none focus:shadow-outline-blue flex justify-center flex-col">
+            Add Subscriber
+        </button>
+    </div>
     <div class="grid grid-cols-5 gap-2 pt-5">
         <input type="text" value="<%= term %>" hx-include="this, [name='status']" hx-get="/" hx-trigger="keyup changed delay:200ms" hx-target="#table" hx-swap="outerHTML" class="bg-[#31363F] rounded-lg text-[#EEEEEE] px-2 py-1 focus:ring-0 focus:border-0 focus:outline-0 col-span-1" placeholder="Search..." name="term">
         <select name="status" id="" hx-get="/" hx-include="this, [name='term']" hx-trigger="change" hx-target="#table" hx-swap="outerHTML"  class="bg-[#31363F] rounded-lg text-[#EEEEEE] px-2 py-1 focus:ring-0 focus:border-0 focus:outline-0 col-span-1">

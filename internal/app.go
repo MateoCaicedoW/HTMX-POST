@@ -84,6 +84,8 @@ func AddRoutes(r server.Router) error {
 	r.Use(server.InCtxMiddleware("userService", home.NewService()))
 
 	r.HandleFunc("GET /{$}", home.Index)
+	r.HandleFunc("GET /new", home.New)
+	r.HandleFunc("POST /new", home.Create)
 
 	// Mounting the assets manager at the end of the routes
 	// so that it can serve the public assets.

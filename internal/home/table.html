@@ -4,43 +4,26 @@
         <table class="min-w-full border-separate border-spacing-0 border-none text-left">
             <thead class="h-8 rounded-md bg-[#31363F]">
                 <tr class="">
-                    <th class="w-[399px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md">Email
-                    </th>
-                    <th class="w-[399px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md cursor-pointer flex items-center gap-1"
-                    <%= if (orderBy == "name" && order=="asc"){ %>
-                        hx-get="/?orderBy=name&order=desc"
-                    <% } else { %>
-                        hx-get="/?orderBy=name&order=asc"
-                    <% } %>
-                    hx-trigger="click"
-                    hx-swap="outerHTML"
-                    hx-target="#table"
-
-                    >Name
-                        <%= if (orderBy == "name") { %>
-                            <svg class="<%= if (order=="asc") { %> rotate-180   <% } %>" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8.00004 3.33334V12.6667M8.00004 12.6667L12.6667 8.00001M8.00004 12.6667L3.33337 8.00001" stroke="#EEEEEE" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        <% } %>
-                    </th>
+                    <%= partial("home/sort_th.html", {
+                        title: "Email",
+                        name: "email",
+                        class: "w-[399px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md"
+                    }) %>
+                    
+                    <%= partial("home/sort_th.html", {
+                        title: "Name",
+                        name: "name",
+                        class: "w-[399px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md cursor-pointer"
+                    }) %>
+                    
                     <th class="text-right w-[103px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md">Phone</th>
+                    
+                    <%= partial("home/sort_th.html", {
+                        title: "Status",
+                        name: "status",
+                        class: "text-right w-[103px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md "
+                    }) %>
 
-                    <th class="text-right w-[103px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md  flex items-center gap-1 cursor-pointer"
-                    <%= if (orderBy == "status" && order=="asc") { %>
-                        hx-get="/?orderBy=status&order=desc"
-                    <% } else { %>
-                        hx-get="/?orderBy=status&order=asc"
-                    <% } %>
-                    hx-trigger="click"
-                    hx-swap="outerHTML"
-                    hx-target="#table"
-                    >Status
-                        <%= if (orderBy == "status") { %>
-                            <svg class="<%= if (order=="asc") { %> rotate-180   <% } %>" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <path d="M8.00004 3.33334V12.6667M8.00004 12.6667L12.6667 8.00001M8.00004 12.6667L3.33337 8.00001" stroke="#EEEEEE" stroke-width="1.33333" stroke-linecap="round" stroke-linejoin="round"></path>
-                            </svg>
-                        <% } %>
-                    </th>
                     <th class="w-[70px] h-8  px-3 text-xs font-semibold text-slate-11 first:rounded-l-md last:rounded-r-md"></th>
                 </tr>
             </thead>
@@ -79,7 +62,7 @@
             swap: "outerHTML"
         }) %>
     <% } else { %>
-        <div class="flex justify-center items-center flex-col justify-center h-64 border border-[#31363F] rounded-lg">
+        <div class="flex justify-center items-center flex-col h-64 border border-[#31363F] rounded-lg">
             <span class="text-white text-lg">No users yet</span>
             <span class="text-white text-sm">Add users and they will show up here.</span>
         </div>

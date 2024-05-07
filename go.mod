@@ -4,7 +4,6 @@ go 1.22.1
 
 require (
 	github.com/leapkit/core v1.2.15
-	github.com/mattn/go-sqlite3 v1.14.15
 	github.com/paganotoni/tailo v1.0.4
 	github.com/wawandco/fako v0.0.0-20180828010250-c36a0bc97398
 )

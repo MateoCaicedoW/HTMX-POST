@@ -15,8 +15,6 @@ import (
 	"github.com/leapkit/core/server"
 	"github.com/leapkit/core/session"
 	"github.com/paganotoni/tailo"
-
-	_ "github.com/mattn/go-sqlite3"
 )
 
 var (

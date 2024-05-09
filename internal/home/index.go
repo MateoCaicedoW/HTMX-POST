@@ -41,7 +41,7 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	rw.Set("orderBy", orderBy)
 	rw.Set("order", order)
 	rw.Set("status", status)
-
+	rw.Set("hxRequest", r.Header.Get("HX-Request") == "true")
 	if r.Header.Get("HX-Request") == "true" {
 		w.Header().Set("HX-Push-Url", r.URL.String())
 		err := rw.RenderClean("home/table.html")

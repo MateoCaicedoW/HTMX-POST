@@ -6,10 +6,15 @@ type List struct {
 	PerPage int
 	Page    int
 	Total   int
+	Pages   []paginationValue
 
-	Term string
-
+	Term  string
 	Items interface{}
+}
+
+type paginationValue struct {
+	Value  interface{}
+	IsPage bool
 }
 
 // TotalPages returns the total number of pages based on the total
@@ -60,4 +65,64 @@ func (l List) PrevPage() (prev int) {
 	}
 
 	return prev
+}
+
+func (l List) pagesRange() []int {
+	if l.Pages != nil {
+		pages := make([]int, 0)
+		for _, page := range l.Pages {
+			if page.IsPage {
+				pages = append(pages, page.Value.(int))
+			}
+		}
+		return pages
+	}
+
+	pages := make([]int, l.TotalPages())
+	for i := range pages {
+		pages[i] = i + 1
+	}
+
+	return pages
+}
+
+func (l List) NumericPagination() []paginationValue {
+	pages := l.pagesRange()
+	pagination := make([]paginationValue, 0)
+	append := func(value interface{}, isPage bool) {
+		pagination = append(pagination, paginationValue{
+			Value:  value,
+			IsPage: isPage,
+		})
+	}
+
+	if len(pages) <= 5 {
+		for _, page := range pages {
+			append(page, true)
+		}
+		return pagination
+	}
+
+	if l.Page <= 3 {
+		for i := 0; i < 5; i++ {
+			append(pages[i], true)
+		}
+		append("...", false)
+	} else if l.Page >= len(pages)-2 {
+		append(pages[0], true)
+		append("...", false)
+		for i := len(pages) - 5; i < len(pages); i++ {
+			append(pages[i], true)
+		}
+	} else {
+		append(pages[0], true)
+		append("...", false)
+		for i := l.Page - 2; i <= l.Page+2; i++ {
+			append(pages[i], true)
+		}
+
+		append("...", false)
+		append(pages[len(pages)-1], true)
+	}
+	return pagination
 }

@@ -1,6 +1,10 @@
 package models
 
-import "github.com/gobuffalo/validate"
+import (
+	"sort"
+
+	"github.com/gobuffalo/validate"
+)
 
 type User struct {
 	Name   string `fako:"full_name"`
@@ -9,53 +13,67 @@ type User struct {
 	Active bool
 }
 
-// OrderUserByName is a type that allows to sort a list of users by name.
-type OrderUserByName []User
+type Users []User
 
-func (u OrderUserByName) Len() int {
-	return len(u)
+func (u Users) Sort(orderBy, order string) {
+	switch orderBy {
+	case "name":
+		if order == "desc" {
+			orderByKey(u, sortByName, false)
+			return
+		}
+		orderByKey(u, sortByName, true)
+	case "status":
+		if order == "desc" {
+			orderByKey(u, sortByStatus, true)
+			return
+		}
+		orderByKey(u, sortByStatus, false)
+	case "email":
+		if order == "desc" {
+			orderByKey(u, sortByEmail, true)
+			return
+		}
+		orderByKey(u, sortByEmail, false)
+	case "phone":
+		if order == "desc" {
+			orderByKey(u, sortByPhone, true)
+			return
+		}
+		orderByKey(u, sortByPhone, false)
+	}
+
 }
 
-func (u OrderUserByName) Less(i, j int) bool {
-	return u[i].Name < u[j].Name
+type userSortFunc func(u1, u2 *User) bool
+
+func orderByKey(users Users, key userSortFunc, reverse bool) {
+	sort.Slice(users, func(i, j int) bool {
+		if reverse {
+			return key(&users[j], &users[i])
+		}
+		return key(&users[i], &users[j])
+	})
 }
 
-func (u OrderUserByName) Swap(i, j int) {
-	u[i], u[j] = u[j], u[i]
+func sortByStatus(u1, u2 *User) bool {
+	return u1.Active && !u2.Active
 }
 
-// OrderUserByStatus is a type that allows to sort a list of users by status.
-type OrderUserByStatus []User
-
-func (u OrderUserByStatus) Len() int {
-	return len(u)
+func sortByName(u1, u2 *User) bool {
+	return u1.Name < u2.Name
 }
 
-func (u OrderUserByStatus) Less(i, j int) bool {
-	return u[i].Active
+func sortByEmail(u1, u2 *User) bool {
+	return u1.Email < u2.Email
 }
 
-func (u OrderUserByStatus) Swap(i, j int) {
-	u[i], u[j] = u[j], u[i]
-}
-
-// OrderUserByEmail is a type that allows to sort a list of users by email.
-type OrderUserByEmail []User
-
-func (u OrderUserByEmail) Len() int {
-	return len(u)
-}
-
-func (u OrderUserByEmail) Less(i, j int) bool {
-	return u[i].Email < u[j].Email
-}
-
-func (u OrderUserByEmail) Swap(i, j int) {
-	u[i], u[j] = u[j], u[i]
+func sortByPhone(u1, u2 *User) bool {
+	return u1.Phone < u2.Phone
 }
 
 // UserService is the service that allows to interact with the users.
 type UserService interface {
 	Validate(user User) *validate.Errors
-	All(term string, perpage, page int, orderBy, order, status string) List
+	All(term string, perpage, page int, OrderBy, Order, status string) List
 }

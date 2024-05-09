@@ -2,7 +2,6 @@ package home
 
 import (
 	"blogpost/internal/models"
-	"sort"
 	"strconv"
 	"strings"
 
@@ -26,7 +25,7 @@ var users []models.User
 func (s *service) All(term string, perPage, page int, orderBy, order, status string) models.List {
 
 	// Filter users by term
-	items := []models.User{}
+	var items models.Users
 	for _, user := range users {
 		term = strings.ToLower(term)
 		name := strings.ToLower(user.Name)
@@ -40,7 +39,7 @@ func (s *service) All(term string, perPage, page int, orderBy, order, status str
 	if status != "all" {
 		boolValue, _ := strconv.ParseBool(status)
 
-		filtered := []models.User{}
+		filtered := make([]models.User, 0, len(items))
 		for _, user := range items {
 			if user.Active == boolValue {
 				filtered = append(filtered, user)
@@ -50,36 +49,7 @@ func (s *service) All(term string, perPage, page int, orderBy, order, status str
 		items = filtered
 	}
 
-	// Sort users
-	if orderBy == "name" {
-		if order == "desc" {
-			sort.Sort(sort.Reverse(models.OrderUserByName(items)))
-		}
-
-		if order == "asc" {
-			sort.Sort(models.OrderUserByName(items))
-		}
-	}
-
-	if orderBy == "status" {
-		if order == "desc" {
-			sort.Sort(sort.Reverse(models.OrderUserByStatus(items)))
-		}
-
-		if order == "asc" {
-			sort.Sort(models.OrderUserByStatus(items))
-		}
-	}
-
-	if orderBy == "email" {
-		if order == "desc" {
-			sort.Sort(sort.Reverse(models.OrderUserByEmail(items)))
-		}
-
-		if order == "asc" {
-			sort.Sort(models.OrderUserByEmail(items))
-		}
-	}
+	items.Sort(orderBy, order)
 
 	// Paginate users
 	total := len(users)

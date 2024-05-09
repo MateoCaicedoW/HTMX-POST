@@ -2,6 +2,7 @@
     <div class="text-xs">
         Page <%= list.Page %> of <%= list.TotalPages() %>
     </div>  
+
     <div class="flex flex-row gap-3">
         <a 
             <%= if (list.HasPrev()) { %>
@@ -10,6 +11,18 @@
             class="<%= if (!list.HasPrev()){ %> opacity-50 disabled cursor-default <%} else {%> cursor-pointer <% } %> bg-[#31363F] shadow-sm p-1 px-3.5 rounded-lg flex flex-row items-center text-xs">
             Previous
         </a>
+
+        <%= for (page) in list.NumericPagination() { %>
+                <%= if (!page.IsPage) { %>
+                    <a class="bg-[#31363F] shadow-sm p-1 px-3.5 rounded-lg flex flex-row items-center text-xs">
+                        <%= page.Value %>
+                <% } else { %>
+                    <a hx-get="<%= urlWithParam(currentURL, {"page": page.Value}) %>" hx-target="<%= hx_target %>" hx-swap="<%= swap %>" class=" cursor-pointer bg-[#31363F] shadow-sm p-1 px-3.5 rounded-lg flex flex-row items-center text-xs">
+                        <%= page.Value %>
+                <% } %>
+                
+            </a>
+        <% } %>
 
         <a
             <%= if (list.HasNext()) { %>
